@@ -35,4 +35,10 @@ const original = statSync(source).size;
 if (copied !== original) {
   throw new Error(`entry.png copy incomplete: ${copied} of ${original} bytes`);
 }
+
+// The copied file must carry the same format marker as the source.
+const targetMagic = readFileSync(target).subarray(0, 4);
+if (!targetMagic.equals(magic)) {
+  throw new Error('entry.png copy has different leading bytes than the source');
+}
 console.log(`wrote ${target} (${copied} bytes)`);
